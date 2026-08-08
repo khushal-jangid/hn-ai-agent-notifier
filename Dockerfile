@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8500
 
-CMD ["python", "webapp.py"]
+CMD ["sh", "-c", "uvicorn webapp:app --host 0.0.0.0 --port ${PORT:-10000}"]
