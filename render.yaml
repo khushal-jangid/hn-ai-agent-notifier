@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: agentscout-web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn webapp:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: AGENTSCOUT_EMAIL_TO
+        value: khushaljangra013@gmail.com
+      - key: AGENTSCOUT_SMTP_PASSWORD
+        sync: false
+
+  - type: worker
+    name: agentscout-notifier-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python auto_notifier.py
+    envVars:
+      - key: AGENTSCOUT_EMAIL_TO
+        value: khushaljangra013@gmail.com
+      - key: AGENTSCOUT_SMTP_PASSWORD
+        sync: false
+      - key: AGENTSCOUT_POLL_INTERVAL
+        value: "900"
