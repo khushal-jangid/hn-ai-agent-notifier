@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8500
+ENV PORT=10000
+EXPOSE 10000
 
-CMD ["sh", "-c", "uvicorn webapp:app --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["python", "webapp.py"]

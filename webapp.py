@@ -19,11 +19,15 @@ app = FastAPI(title="AgentScout — Hacker News AI Briefing Hub")
 def start_background_worker():
     """Starts background Hacker News notifier loop inside web process (100% Free deployment mode)"""
     def worker_loop():
-        print("[Startup] Starting AgentScout background notifier thread...")
+        import time
+        print("[Startup] Waiting 10 seconds for web server port binding...")
+        time.sleep(10)
+        print("[Startup] Starting AgentScout background notifier loop...")
         auto_notifier.start_notifier()
     
     t = threading.Thread(target=worker_loop, daemon=True)
     t.start()
+
 
 
 # Enable CORS
