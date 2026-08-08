@@ -53,6 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load
     fetchLiveBrief();
 
+    // Auto-refresh news on website every 5 minutes if tab is open
+    setInterval(() => {
+        console.log('[AutoRefresh] Updating website news from Hacker News API...');
+        fetchLiveBrief();
+    }, 300000);
+
+
     // Event Listeners
     fetchBriefBtn.addEventListener('click', () => fetchLiveBrief());
     sendEmailBtn.addEventListener('click', () => sendEmailBriefing());
