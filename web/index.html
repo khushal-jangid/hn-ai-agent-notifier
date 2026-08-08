@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentScout — Hacker News AI Briefing Hub</title>
+    <meta name="description" content="Live Hacker News AI Agent Briefing Dashboard and Automated Email Dispatcher.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Ambient Background Glows -->
+    <div class="bg-glow blob-1"></div>
+    <div class="bg-glow blob-2"></div>
+    <div class="bg-glow blob-3"></div>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="brand-logo-container">
+                <div class="brand-icon"><i class="fa-solid fa-newspaper"></i></div>
+                <div class="brand-sparkle"></div>
+            </div>
+            <div class="brand-text">
+                <h1>AGENTSCOUT <span class="badge-v2">2.0</span></h1>
+                <span class="sub">Hacker News AI Briefing Hub</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="live-toggle-container">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="liveModeToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label" id="toggleLabel">Live HN API</span>
+            </div>
+            <div class="header-status">
+                <span id="liveStatusBadge" class="status-indicator live">
+                    <span class="pulse-dot"></span> LIVE HN STREAM
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Stats Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-indigo"><i class="fa-solid fa-bolt"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="statStoriesCount">5</span>
+                    <span class="stat-label">High-Signal Stories</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-cyan"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="statMaxPoints">428</span>
+                    <span class="stat-label">Peak Points</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-pink"><i class="fa-solid fa-comments"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="statTotalComments">343</span>
+                    <span class="stat-label">Total Discussions</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-emerald"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="statAgentScore">98%</span>
+                    <span class="stat-label">Agent Relevance</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Control Bar & Email Dispatcher Card -->
+        <section class="control-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2><i class="fa-solid fa-paper-plane glow-icon"></i> Email Briefing Dispatcher</h2>
+                    <p>Curate live Hacker News AI digests and deliver formatted briefs directly to your inbox or copy text instantly.</p>
+                </div>
+                <div class="card-badge"><i class="fa-solid fa-clock"></i> Automated Dispatch</div>
+            </div>
+            
+            <div class="control-form">
+                <div class="input-group">
+                    <label for="emailInput"><i class="fa-solid fa-envelope"></i> Recipient Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="emailInput" value="khushaljangra013@gmail.com" placeholder="your_email@gmail.com" autocomplete="email">
+                        <i class="fa-solid fa-circle-check input-valid-icon"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="passwordInput"><i class="fa-solid fa-key"></i> SMTP App Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="passwordInput" value="bcakeoqlbkrwcxdj" placeholder="Gmail App Password">
+                        <button type="button" class="toggle-password-btn" id="togglePasswordBtn" title="Show/Hide Password">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="input-group short">
+                    <label for="topNSelect"><i class="fa-solid fa-list-ol"></i> Count</label>
+                    <select id="topNSelect">
+                        <option value="3">3 Stories</option>
+                        <option value="5" selected>5 Stories</option>
+                        <option value="8">8 Stories</option>
+                        <option value="10">10 Stories</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button id="sendEmailBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i> Send Briefing to Email
+                    </button>
+                    <button id="fetchBriefBtn" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Live Brief
+                    </button>
+                    <button id="copyBriefBtn" class="btn btn-tertiary">
+                        <i class="fa-solid fa-copy"></i> Copy Brief Text
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <section class="dashboard-grid">
+            <!-- Left Column: Stories Feed -->
+            <div class="feed-section">
+                <div class="feed-header">
+                    <div class="feed-title">
+                        <h3><i class="fa-solid fa-cubes-stacked glow-icon"></i> Curated Agent Stories</h3>
+                        <span id="briefTime" class="time-badge"><i class="fa-regular fa-clock"></i> Updated: Just now</span>
+                    </div>
+
+                    <!-- Search Bar & Filters -->
+                    <div class="feed-controls">
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Search stories by keyword (e.g. MCP, eval, framework)...">
+                            <button id="clearSearchBtn" class="clear-search-btn hidden"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="filter-pills" id="filterPills">
+                            <button class="pill active" data-filter="all"><i class="fa-solid fa-border-all"></i> All</button>
+                            <button class="pill" data-filter="agent"><i class="fa-solid fa-robot"></i> AI Agents</button>
+                            <button class="pill" data-filter="mcp"><i class="fa-solid fa-plug"></i> MCP</button>
+                            <button class="pill" data-filter="llm"><i class="fa-solid fa-brain"></i> LLMs</button>
+                            <button class="pill" data-filter="tool"><i class="fa-solid fa-wrench"></i> Tools</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State / Skeleton Loader -->
+                <div id="loadingState" class="loading-state hidden">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+
+                <!-- Stories List Container -->
+                <div id="storiesContainer" class="stories-container">
+                    <!-- Dynamic Stories Inserted Here -->
+                </div>
+            </div>
+
+            <!-- Right Column: Engineering Handoff & Checklist -->
+            <div class="side-section">
+                <!-- Interactive Action Checklist -->
+                <div class="side-card action-card">
+                    <div class="side-card-header">
+                        <h4><i class="fa-solid fa-list-check"></i> Next Engineering Actions</h4>
+                        <span class="progress-badge" id="actionProgressBadge">0/3</span>
+                    </div>
+                    <p class="card-subtext">Action items automatically suggested for this briefing:</p>
+                    <ul id="nextActionsList" class="actions-checklist">
+                        <!-- Dynamic Checkbox Items -->
+                    </ul>
+                </div>
+
+                <!-- Live Briefing Text Preview -->
+                <div class="side-card preview-card">
+                    <div class="side-card-header">
+                        <h4><i class="fa-solid fa-file-lines"></i> Brief Summary</h4>
+                        <button id="expandBriefBtn" class="icon-btn" title="View Full Text"><i class="fa-solid fa-expand"></i></button>
+                    </div>
+                    <div class="brief-preview-box" id="briefPreviewBox">
+                        <pre id="briefTextContent">Loading briefing preview...</pre>
+                    </div>
+                </div>
+
+                <!-- About & Architecture Card -->
+                <div class="side-card info-card">
+                    <h4><i class="fa-solid fa-circle-info"></i> How AgentScout Works</h4>
+                    <p>AgentScout continuously ranks Hacker News submissions based on discussion velocity, point acceleration, and semantic keyword matching for AI Agents, Model Context Protocol (MCP), and Autonomous Workflows.</p>
+                    <div class="tech-stack-pills">
+                        <span>FastAPI</span>
+                        <span>Python 3.10</span>
+                        <span>Hacker News API</span>
+                        <span>SMTP Dispatch</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-icon-wrapper" id="toastIconWrapper">
+            <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="toast-content">
+            <span id="toastTitle" class="toast-title">Notification</span>
+            <span id="toastMessage" class="toast-msg">Email sent successfully!</span>
+        </div>
+        <button id="toastCloseBtn" class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Briefing Modal -->
+    <div id="briefModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-code"></i> Full Briefing Output</h3>
+                <button id="closeModalBtn" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="modalBriefText" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="modalCopyBtn" class="btn btn-primary"><i class="fa-solid fa-copy"></i> Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript App logic -->
+    <script src="app.js"></script>
+</body>
+</html>
