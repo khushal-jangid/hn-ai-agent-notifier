@@ -10,8 +10,21 @@ from pydantic import BaseModel
 
 import scout
 import delivery
+import auto_notifier
+import threading
 
 app = FastAPI(title="AgentScout — Hacker News AI Briefing Hub")
+
+@app.on_event("startup")
+def start_background_worker():
+    """Starts background Hacker News notifier loop inside web process (100% Free deployment mode)"""
+    def worker_loop():
+        print("[Startup] Starting AgentScout background notifier thread...")
+        auto_notifier.start_notifier()
+    
+    t = threading.Thread(target=worker_loop, daemon=True)
+    t.start()
+
 
 # Enable CORS
 app.add_middleware(
